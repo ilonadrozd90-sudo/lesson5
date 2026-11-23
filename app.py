@@ -16,10 +16,14 @@ class Window(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Start / Stop")
+        self.setMinimumWidth(200)
 
         self.spin_box = QSpinBox()
-        self.spin_box.setRange(10, 10000)
-        self.spin_box.setValue(10)
+        self.spin_box.setRange(0, 10000)
+        self.spin_box.setValue(0)
+        self.spin_box.setReadOnly(True)
+        self.spin_box.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.spin_box.setStyleSheet("color: lightgray;")
 
         self.toggle_button = QPushButton("Start")
         self.toggle_button.setCheckable(True)
