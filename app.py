@@ -33,12 +33,12 @@ class Window(QMainWindow):
         self.spin_box.setStyleSheet("background: lightgray;")
 
         self.vertical_slider = QSlider(Qt.Orientation.Vertical)
+        self.vertical_slider.setRange(0, 255)
         self.secondary_spin_box = QSpinBox()
         self.secondary_spin_box.setRange(0, 255)
         self.secondary_spin_box.setReadOnly(True)
         self.secondary_spin_box.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.secondary_spin_box.setStyleSheet("background: lightgray;")
-        self.vertical_slider.valueChanged.connect(self.secondary_spin_box.setValue)
 
         self.color_box = QLabel()
         self.color_box.setMinimumWidth(100)
@@ -46,7 +46,8 @@ class Window(QMainWindow):
             QSizePolicy.Policy.Preferred,
             QSizePolicy.Policy.Expanding,
         )
-        self.color_box.setStyleSheet("background:light gray")
+        self.vertical_slider.valueChanged.connect(self.slider)
+        self.slider(self.vertical_slider.value())
 
         self.toggle_button = QPushButton("Start")
         self.toggle_button.setCheckable(True)
@@ -86,9 +87,9 @@ class Window(QMainWindow):
         self.counter +=1 
         self.spin_box.setValue(self.counter)
 
-    def slider(self):
-        val = self.slider.value()
-        self.secondary_slider.setValue(val)
+    def slider(self, value: int) -> None:
+        self.secondary_spin_box.setValue(value)
+        self.color_box.setStyleSheet(f"background: rgb(0, {value}, 0);")
 
 def main() -> None:
     app = QApplication(sys.argv)
