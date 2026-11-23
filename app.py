@@ -6,11 +6,12 @@ from PySide6.QtWidgets import (
     QLabel,
     QMainWindow,
     QPushButton,
+    QSlider,
     QSpinBox,
     QVBoxLayout,
     QWidget,
 )
-
+from PySide6.QtCore import Qt, QTimer
 
 class Window(QMainWindow):
     def __init__(self) -> None:
@@ -18,12 +19,24 @@ class Window(QMainWindow):
         self.setWindowTitle("Start / Stop")
         self.setMinimumWidth(200)
 
+        self.counter = 0
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.timer_method)
+        self.timer.start(1000)
+
         self.spin_box = QSpinBox()
         self.spin_box.setRange(0, 10000)
         self.spin_box.setValue(0)
         self.spin_box.setReadOnly(True)
         self.spin_box.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
-        self.spin_box.setStyleSheet("color: lightgray;")
+        self.spin_box.setStyleSheet("background: lightgray;")
+
+        self.vertical_slider = QSlider(Qt.Orientation.Vertical)
+        self.secondary_spin_box = QSpinBox()
+        self.secondary_spin_box.setRange(0, 255)
+        self.secondary_spin_box.setReadOnly(True)
+        self.secondary_spin_box.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
+        self.secondary_spin_box.setStyleSheet("background: lightgray;")
 
         self.toggle_button = QPushButton("Start")
         self.toggle_button.setCheckable(True)
@@ -37,12 +50,30 @@ class Window(QMainWindow):
         layout.addLayout(value_layout)
         layout.addWidget(self.toggle_button)
 
+        slider_layout = QVBoxLayout()
+        slider_layout.addWidget(self.vertical_slider)
+        slider_layout.addWidget(self.secondary_spin_box)
+
+        main_layout = QHBoxLayout()
+        main_layout.addLayout(layout)
+        main_layout.addLayout(slider_layout)
+
         central_widget = QWidget()
-        central_widget.setLayout(layout)
+        central_widget.setLayout(main_layout)
         self.setCentralWidget(central_widget)
 
-    def _update_button_text(self, running: bool) -> None:
-        self.toggle_button.setText("Stop" if running else "Start")
+    def _update_button_text(self, checked: bool) -> None:
+        self.toggle_button.setText("Stop" if checked else "Start")
+        if checked:
+            self.counter = 0
+            self.timer.start(10)
+        else:
+            self.timer.stop()
+
+
+    def timer_method(self):
+        self.counter +=1 
+        self.spin_box.setValue(self.counter)
 
 
 def main() -> None:
