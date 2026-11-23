@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QSlider,
+    QSizePolicy,
     QSpinBox,
     QVBoxLayout,
     QWidget,
@@ -37,6 +38,15 @@ class Window(QMainWindow):
         self.secondary_spin_box.setReadOnly(True)
         self.secondary_spin_box.setButtonSymbols(QSpinBox.ButtonSymbols.NoButtons)
         self.secondary_spin_box.setStyleSheet("background: lightgray;")
+        self.vertical_slider.valueChanged.connect(self.secondary_spin_box.setValue)
+
+        self.color_box = QLabel()
+        self.color_box.setMinimumWidth(100)
+        self.color_box.setSizePolicy(
+            QSizePolicy.Policy.Preferred,
+            QSizePolicy.Policy.Expanding,
+        )
+        self.color_box.setStyleSheet("background:light gray")
 
         self.toggle_button = QPushButton("Start")
         self.toggle_button.setCheckable(True)
@@ -57,6 +67,7 @@ class Window(QMainWindow):
         main_layout = QHBoxLayout()
         main_layout.addLayout(layout)
         main_layout.addLayout(slider_layout)
+        main_layout.addWidget(self.color_box)
 
         central_widget = QWidget()
         central_widget.setLayout(main_layout)
@@ -75,6 +86,9 @@ class Window(QMainWindow):
         self.counter +=1 
         self.spin_box.setValue(self.counter)
 
+    def slider(self):
+        val = self.slider.value()
+        self.secondary_slider.setValue(val)
 
 def main() -> None:
     app = QApplication(sys.argv)
